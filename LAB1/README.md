@@ -1,1 +1,6 @@
-
+TRƯƠNG VĂN QUỐC PHONG
+1150080153
+LAB1 Examining SSH  Telnet in Wireshark
+. Nội dung đã thực hiệnThực hiện cài đặt và cấu hình bộ lọc phân tích gói tin (tcp.port == 23 và tcp.port == 22) trên phần mềm Wireshark.Sử dụng phần mềm PuTTY tiến hành mô phỏng gửi yêu cầu kết nối giao thức mạng thông qua hai cổng dịch vụ Telnet và SSH.Khôi phục dòng dữ liệu bằng tính năng Follow TCP Stream để kiểm tra cấu trúc gói tin của cả hai giao thức.
+2. Kết quả thực hiệnGiao thức Telnet: Bắt trọn gói tin chứa thông tin kết nối dưới dạng văn bản thô (Plaintext), chứng minh Telnet hoàn toàn không bảo mật.Giao thức SSH: Toàn bộ dữ liệu truyền tải đều được mã hóa hoàn toàn thành các ký tự đặc biệt, không thể đọc được nội dung gốc, chứng minh tính an toàn cao của SSH.
+3. Các lưu ý để Giảng viên kiểm tra hoặc chạy lại bài làmMôi trường thực nghiệm: Bài lab được triển khai giả lập Endpoint-to-Endpoint bằng cơ chế Loopback/Internet Traffic Capture trên máy trạm để tối ưu thời gian tạo lưu lượng.Card mạng cấu hình: Khi chạy lại trên Wireshark, giảng viên vui lòng chọn card mạng Adapter for loopback traffic (nếu test nội bộ 127.0.0.1) hoặc card Wi-Fi/Ethernet đang hoạt động (nếu test IP Public hướng ngoài) để bắt được chính xác các gói tin TCP 22/23.
