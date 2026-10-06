@@ -1,0 +1,12 @@
+# BÁO CÁO THỰC HÀNH LAB 5 - CẤU HÌNH TƯỜNG LỬA PFSENSE
+[11_ĐH_CNPM2]-LAB5_1150080153-Trương Văn Quốc Phong
+
+## 1. Phiên bản môi trường
+* **Hệ thống ảo hóa:** VMware Workstation Pro
+* **Thiết bị Firewall:** pfSense CE 2.7.2 (Hệ điều hành FreeBSD 64-bit)
+* **Máy trạm vùng LAN:** Windows Server 2025 (IP tĩnh: 10.0.0.2 / Subnet: 255.0.0.0)
+
+## 2. Kết quả các tình huống thực hiện
+* **Tình huống 1 (Kiểm soát gói tin LAN):** Thiết lập thành công luật chặn ICMP (Ping) từ vùng mạng LAN ra môi trường ngoài.
+* **Minh chứng kỹ thuật:** Hệ thống trả về trạng thái `Request timed out` (100% loss) khi thực hiện lệnh ping kiểm thử thực tế từ máy trạm.
+* **Trạng thái bài Lab:** Đạt yêu cầu (**PASS**).
