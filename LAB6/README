@@ -1,6 +1,6 @@
 # BÁO CÁO THỰC HÀNH LAB 6 - CHÍNH SÁCH TRUY CẬP TRÊN PFSENSE
 [11_ĐH_CNPM2]-LAB6_1150080153-Trương Văn Quốc Phong
-
+link video: https://youtu.be/hRtJPaPLayk
 ## 1. Môi trường triển khai
 * Tường lửa chính: pfSense CE 2.7.2 (Gồm các vùng mạng WAN, MGMT, LAN, DMZ) [B.2, B.3]
 * Máy kiểm thử vùng LAN: Windows Server 2025 (IP: 10.6.0.10) [B.4, 4.2]
