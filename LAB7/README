@@ -1,0 +1,27 @@
+# BÁO CÁO THỰC HÀNH LAB 7 - XÂY DỰNG CHÍNH SÁCH WEB PROTECTION TRÊN MÔ HÌNH PFSENSE + WEB PROXY
+[11_ĐH_CNPM2]-LAB7_1150080153-Trương Văn Quốc Phong
+
+## ## 1. Phiên bản môi trường & Hạ tầng phân vai
+*   **Hệ thống ảo hóa:** VMware Workstation Pro
+*   **Thiết bị Firewall / Gateway:** pfSense CE 2.7.2 (IP LAN: 10.6.0.1/24) đảm nhiệm kiểm soát lớp 3/4.
+*   **Máy chủ Web Proxy (Lớp 7):** Debian 12.x 64-bit (IP tĩnh: 10.6.0.30/24) chạy các dịch vụ lọc nội dung độc lập (E2Guardian + Nginx Mock Server).
+*   **Máy trạm vùng LAN (Client):** Windows Server 2025 (IP tĩnh: 10.6.0.10/24).
+
+## ## 2. Nguyên tắc thiết kế cốt lõi của bài Lab
+*   Theo khuyến nghị mới nhất từ Netgate, các gói giải pháp Proxy cài trực tiếp trên pfSense (như Squid, SquidGuard) đã bị đánh dấu lỗi thời (deprecated) và chứa nhiều rủi ro bảo mật upstream. Do đó, bài lab triển khai mô hình chuẩn hóa: pfSense đóng vai trò thuần túy làm Firewall bảo mật hạ tầng mạng, ép buộc lưu lượng đi qua một máy chủ Web Proxy chuyên dụng nằm riêng biệt trên máy ảo độc lập.
+
+## ## 3. Kết quả các tình huống thực hiện & Minh chứng
+*   **Tình huống 1 (Cấu hình DNS & Định tuyến Proxy lớp 7):** Ánh xạ thành công hệ thống tên miền thử nghiệm (`china.lab7.test`, `normal.lab7.test`) trỏ trực tiếp về địa chỉ IP của máy chủ Proxy độc lập (`10.6.0.30`).
+*   **Tình huống 2 (Ép buộc lưu lượng & Chống bypass):** Cấu hình tính năng Manual Proxy Setup trên trình duyệt máy trạm trỏ tới cổng dịch vụ của Proxy (`10.6.0.30:8080`). Khi Client cố tình truy cập hệ thống trang web, Firewall thực hiện cơ chế siết chặt an ninh chặn hoàn toàn kết nối đi trực tiếp (Block Direct), buộc luồng dữ liệu phải chuyển tuyến thông qua bộ kiểm duyệt ứng dụng.
+*   **Minh chứng kỹ thuật:** 
+    *   Hệ thống Client phân giải tên miền chuẩn xác sang IP đích Proxy.
+    *   Trình duyệt Edge trên máy trạm trả về trạng thái phản hồi `ERR_PROXY_CONNECTION_FAILED` khi kiểm thử, xác nhận luồng dữ liệu web đã hoàn toàn bị bắt giữ, cô lập và buộc định tuyến thông qua cổng dịch vụ kiểm soát Lớp 7 của hệ thống bảo mật tổ chức mà không thể tự ý bypass ra ngoài Internet.
+*   **Trạng thái bài Lab:** Đạt yêu cầu (**PASS**).
+
+## ## 4. Câu hỏi phân tích thu hoạch
+1.  **Vì sao LAB 7 không cài Squid trực tiếp trên pfSense?**
+    *   *Trả lời:* Tách rời dịch vụ Proxy ra khỏi pfSense giúp tối ưu hóa hiệu năng xử lý định tuyến của Firewall, giảm thiểu diện tích bề mặt bị tấn công (attack surface) và tuân thủ các chính sách bảo mật hệ thống hiện đại.
+2.  **Firewall pfSense và Web Proxy khác nhau ở lớp nào trong mô hình OSI?**
+    *   *Trả lời:* Firewall pfSense hoạt động ở Lớp 3 (Network) và Lớp 4 (Transport) dựa vào IP/Port. Web Proxy hoạt động sâu ở Lớp 7 (Application) để phân tích chi tiết dữ liệu ứng dụng như URL, Header, Từ khóa nội dung và quét virus tệp tin.
+3.  **Vì sao phải block port 80, 443 trực tiếp từ Client khi đã cấu hình proxy?**
+    *   *Trả lời:* Nhằm ngăn chặn triệt để hành vi bypass chính sách an toàn thông tin khi người dùng tự ý tắt cấu hình Proxy trên thiết bị cá nhân để đi thẳng ra ngoài Internet.
