@@ -1,0 +1,47 @@
+LINK VIDEO: https://youtu.be/749gRollX6M
+# BÁO CÁO KẾT QUẢ TRIỂN KHAI LAB 9: LOCAL DNS ATTACK
+
+## 1. Thành phần môi trường ảo hóa đã thiết lập
+*   **Firewall/Router:** pfSense 2.7.x (Gồm 5 interfaces, cổng mạng phục vụ Lab 9: `em4` - `OPT3`).
+*   **DNS Server (Target/Resolver):** Windows Server 2025.
+*   **Attacker:** Kali Linux (Sử dụng shell `zsh`, công cụ `Scapy`, `Python3 HTTP Server`).
+
+---
+
+## 2. Nhật ký các bước cấu hình đã hoàn thành thành công
+
+### Bước 1: Gán cổng mạng và cấu hình IP tĩnh trên pfSense Console
+*   Thêm card mạng thứ 5 thành công trên VMware Workstation, đưa vào vùng cô lập mạng `dns-lab`.
+*   Sử dụng **Option 1** trên giao diện dòng lệnh pfSense gán card mạng mới vào giao diện `OPT3` (`em4`).
+*   Sử dụng **Option 2** cấu hình thành công địa chỉ IPv4 tĩnh cho cổng `OPT3` là **`10.9.0.1/24`** (Tắt tính năng DHCP Server).
+
+### Bước 2: Cấu hình Luật tường lửa (Firewall Rules) trên WebGUI
+*   Đăng nhập hệ thống quản trị đồ họa thông qua máy quản trị dải MGMT (`https://192.168.56.254`).
+*   Đổi tên hiển thị giao diện mạng thành **`DNSLAB`**.
+*   Thiết lập và kích hoạt thành công ma trận 5 luật an toàn mạng:
+    1. **Pass:** Cho phép DNS Server (`10.9.0.10`) gửi truy vấn DNS đến Server mô phỏng (`172.16.6.20:53`).
+    2. **Pass:** Cho phép toàn mạng `DNSLAB net` truy cập cổng web DMZ (`172.16.6.10:80`).
+    3. **Block & Log:** Chặn kết nối sang phân vùng mạng Lab 8 (`10.6.0.0/24`).
+    4. **Block & Log:** Chặn kết nối phá hoại sang mạng Quản trị (`192.168.56.0/24`).
+    5. **Block & Log:** Cô lập hoàn toàn, chặn mọi lưu lượng hướng ra ngoài Internet từ mạng `DNSLAB`.
+
+### Bước 3: Cấu hình Máy chủ DNS Server (Windows Server 2025)
+*   Cài đặt thành công vai trò **DNS Server** thông qua *Server Manager*.
+*   Gán IP tĩnh lớp mạng mới thành công: **`10.9.0.10/24`**, Gateway `10.9.0.1`, Preferred DNS trỏ về chính nó.
+*   Tạo thành công phân vùng **Forward Lookup Zone** mới có tên miền: **`lab9.test`**.
+*   Tạo thành công bản ghi **A Record** mẫu: tên miền `www.lab9.test` trỏ về IP Web DMZ hợp lệ ban đầu là **`172.16.6.10`**.
+
+### Bước 4: Thiết lập môi trường Máy tấn công (Kali Linux - Attacker)
+*   Gán card mạng máy Kali vào LAN segment `dns-lab` và thiết lập IP tĩnh thành công: **`10.9.0.200/24`**, Gateway `10.9.0.1`.
+*   Xử lý lỗi shell `zsh` bằng cú pháp dấu ngoặc đơn thành công, tạo lập phân vùng Web giả mạo độc hại tại thư mục `~/LAB9/fake_site/index.html`.
+*   Khởi chạy thành công dịch vụ lắng nghe Web mồi nhử trên cổng 80:
+    `sudo python3 -m http.server 80 --directory ~/LAB9/fake_site`
+*   Viết hoàn chỉnh file mã nguồn script Python tấn công giả mạo DNS (`dns_spoof.py`) sử dụng thư viện chuyên dụng Scapy, sẵn sàng các hàm `sniff()` bẫy gói tin và giả lập bản tin trả lời DNS độc hại trỏ về IP của Attacker (`10.9.0.200`).
+*   Bật thành công chế độ nghe lén gói tin trên card mạng vật lý ảo: `sudo ip link set eth0 promisc on`.
+
+---
+
+## 3. Đánh giá trạng thái cuối buổi Lab
+*   **Hạ tầng mạng:** Đã hoàn thành và cô lập đúng thiết kế.
+*   **Trạng thái tấn công:** Script tấn công và Web Server giả mạo đã dựng sẵn sàng trên máy Kali. Đã xác định được nguyên nhân lệnh kiểm thử nội bộ bị Loopback trên Windows Server. 
+*   **Hướng tiếp theo khi tiếp tục Lab:** Thực hiện lệnh `nslookup` hoặc truy cập Web từ một máy ảo Client/máy Host độc lập (đóng vai trò máy nạn nhân thực tế gửi gói tin qua card mạng) để kích hoạt kịch bản tấn công chiếm quyền phân giải DNS.
