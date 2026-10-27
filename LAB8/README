@@ -1,5 +1,6 @@
 LINK VIDEO: https://youtu.be/749gRollX6M
-# BÁO CÁO KẾT QUẢ TRIỂN KHAI LAB 9: LOCAL DNS ATTACK
+TRƯƠNG VĂN QUỐC PHONG - 1150080153 - 11CNPM2
+# BÁO CÁO KẾT QUẢ TRIỂN KHAI LAB 8: LOCAL DNS ATTACK
 
 ## 1. Thành phần môi trường ảo hóa đã thiết lập
 *   **Firewall/Router:** pfSense 2.7.x (Gồm 5 interfaces, cổng mạng phục vụ Lab 9: `em4` - `OPT3`).
