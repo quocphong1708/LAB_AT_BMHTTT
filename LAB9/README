@@ -1,0 +1,75 @@
+LINK VIDEO:https://youtu.be/DcSZD4igNjM
+[11_ĐH_CNPM2]-LAB9_1150080153-Trương Văn Quốc Phong
+BÁO CÁO LAB 10 - REMOTE DNS CACHE POISONING
+
+## 📝 TỔNG QUAN BÀI LAB
+Bài lab tập trung vào việc nghiên cứu và thực nghiệm phương thức tấn công **Remote DNS Cache Poisoning (Tấn công Kaminsky)** trong môi trường mạng giả lập được cô lập bởi tường lửa **pfSense**. 
+
+Khác với Local DNS Spoofing, ở bài lab này kẻ tấn công (**Attacker**) bị đẩy sang một Subnet hoàn toàn độc lập, không có quyền nghe lén (`sniffing`) gói tin dữ liệu giữa Resolver và Authoritative DNS, buộc phải thực hiện kỹ thuật bẻ lái tên miền dựa trên cơ chế brute-force mù (guessing) bộ đôi `Transaction ID` và `UDP Source Port`.
+
+---
+
+## 📐 KIẾN TRÚC MẠNG & PHÂN VAI (3 MÁY ẢO TỐI ƯU)
+Hệ thống được triển khai trên hạ tầng ảo hóa gồm 3 thành phần chính:
+1. **pfSense - LAB 10 (Gateway/Firewall):** Định tuyến và thực thi chính sách cô lập giữa các vùng mạng nội bộ.
+2. **Windows Server 2025 (DNS-SERVER):** Chạy `vuln_resolver_lab10.py` phát upstream cố định cổng `33333` nhằm giả lập điều kiện lỗi của resolver cũ.
+3. **Debian 12.x / Kali (ATTACKER & VICTIM):** Đóng vai trò kép vừa là máy khách truy vấn (nạn nhân), vừa chạy script tấn công `kaminsky_remote_lab10.py` và `evil_dns_lab10.py`.
+
+### 📌 Phân định địa chỉ IP:
+* **DNSLAB Subnet:** `10.9.0.0/24` -> DNS-SERVER: `10.9.0.10`
+* **ATTACK-NET Subnet:** `10.10.0.0/24` -> Kali Linux: `10.10.0.200`
+* **DMZ Subnet (Mô phỏng):** `172.16.6.0/24` -> AUTH-DNS: `172.16.6.20`
+
+---
+
+## 🚀 QUY TRÌNH TRIỂN KHAI NHANH (MÔI TRƯỜNG CÔ LẬP)
+
+### Bước 1: Xử lý lỗi thiếu thư viện Offline trên Windows Server
+Vì phân vùng mạng bị cô lập hoàn toàn không có Internet, thực hiện cài đặt module `dnspython` bằng phương pháp nạp file `.whl` trực tiếp từ máy vật lý:
+1. Tải file gói cài đặt từ máy thật: `dnspython-2.9.1-py3-none-any.whl` (hoặc bản `2.7.0`).
+2. Sử dụng tính năng **Drag & Drop** để sao chép file vào màn hình Desktop của Windows Server 2025.
+3. Mở **Command Prompt (CMD)** tại Desktop và thực hiện lệnh:
+   ```cmd
+   pip install dnspython-2.9.1-py3-none-any.whl
+   ```
+
+### Bước 2: Kích hoạt dịch vụ nền
+* **Trên Windows Server 2025 (DNS-SERVER):** Khởi chạy resolver mô phỏng có lỗi cố ý:
+  ```cmd
+  python vuln_resolver_lab10.py
+  ```
+* **Trên Debian/Kali Linux (Tab terminal 1):** Khởi chạy Malicious DNS Server:
+  ```bash
+  sudo python3 evil_dns_lab10.py
+  ```
+* **Trên Debian/Kali Linux (Tab terminal 2):** Dựng HTTP Server phục vụ trang web giả mạo:
+  ```bash
+  sudo python3 -m http.server 80 --directory ~/LAB10/fake_site
+  ```
+
+### Bước 3: Kích hoạt pha tấn công Kaminsky
+Mở Tab terminal 3 trên máy Kali và chạy mã khai thác chính:
+```bash
+python3 kaminsky_remote_lab10.py
+```
+* **Dấu hiệu thành công:** Terminal của Windows Server xuất hiện log `[HIT]` và `[CACHE] delegation poisoned`. Script trên Kali in ra thông báo verify: `www.example.lab10.test A = 10.10.0.200`.
+
+### Bước 4: Nghiệm thu kết quả
+Đứng từ một terminal độc lập, kiểm tra việc bẻ lái tên miền bằng lệnh:
+```bash
+nslookup www.example.lab10.test 10.9.0.10
+```
+👉 *Yêu cầu kết quả trả về IP độc hại `10.10.0.200` của Attacker.*
+
+---
+
+## 🔒 BIỆN PHÁP HARDENING (KHÔI PHỤC HỆ THỐNG CHUẨN)
+Sau khi kết thúc bài lab, tiến hành đóng các kịch bản lỗ hổng và cấu hình an toàn cho hệ thống production:
+1. Tắt script mô phỏng lỗi và khôi phục dịch vụ BIND9 bản mới nhất:
+   ```bash
+   sudo pkill -f vuln_resolver_lab10.py
+   sudo systemctl start bind9
+   ```
+2. Cấu hình **Source-port randomization** trong file `named.conf.options` để ngẫu nhiên hóa cổng UDP nguồn, triệt tiêu khả năng đoán trúng gói tin.
+3. Thu hẹp vùng đệ quy bằng **Recursion ACL** nhằm từ chối phục vụ truy vấn đối với các dải mạng không tin cậy (như `ATTACKNET`).
+4. Kích hoạt **DNSSEC Validation** (`dnssec-validation auto;`) nhằm thiết lập chuỗi xác thực số mã hóa độc quyền, ngăn chặn tuyệt đối các phản hồi giả mạo tầng xa.
