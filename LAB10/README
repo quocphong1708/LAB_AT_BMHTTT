@@ -1,1 +1,47 @@
-LAB 10
+LINK VIDEO: https://youtu.be/aERe2zEufmE
+[11_ĐH_CNPM2]-LAB10_1150080153-Trương Văn Quốc Phong
+# LAB 1: THUẬT TOÁN MÃ HÓA CỔ ĐIỂN & KẾT NỐI CƠ SỞ DỮ LIỆU
+*Môn học: An toàn thông tin / Bảo mật hệ thống thông tin*
+
+## 📁 Cấu trúc thư mục dự án nộp bài
+Dự án được đóng gói chuẩn cấu trúc Maven theo đúng yêu cầu:
+- `LAB1_TuLam/pom.xml`: File cấu hình quản lý thư viện (đã tích hợp PostgreSQL JDBC Driver).
+- `LAB1_TuLam/src/main/java/`: Thư mục chứa toàn bộ mã nguồn Java (`MainForm.java`, `LAB1_MaHoaCoDien.java`).
+- `LAB1_TuLam/src/main/java/.../MainForm.form`: File thiết kế giao diện dạng kéo thả của NetBeans.
+- `database.sql`: File chứa script tạo bảng hệ thống và lệnh truy vấn (không chứa thông tin mật khẩu bảo mật).
+
+## 🗄️ Kiến trúc Cơ sở dữ liệu (Database Architecture)
+
+> Do hệ thống Windows gặp sự cố xung đột thư viện `Microsoft Visual C++ Runtime` dẫn đến việc không thể khởi chạy bộ cài đặt giao diện **SSMS (SQL Server Management Studio)**, em đã linh hoạt tối ưu hóa bài làm bằng cách triển khai cơ sở dữ liệu trên nền tảng đám mây **Neon Cloud (PostgreSQL)** thay thế cho Local SQL Server. 
+> 
+> Giải pháp này giúp ứng dụng Java Swing kết nối trực tuyến ổn định qua giao thức an toàn SSL, đồng thời toàn bộ lịch sử mã hóa đều được lưu trữ đồng bộ thời gian thực (Real-time) trên Cloud.
+
+### 📝 Mã kịch bản cấu trúc dữ liệu (`database.sql`)
+```sql
+CREATE TABLE lich_su_ma_hoa (
+    id SERIAL PRIMARY KEY,
+    ban_goc TEXT,
+    ban_ma TEXT,
+    loai_ma VARCHAR(50),
+    ngay_tao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Lệnh truy vấn kiểm tra dữ liệu lịch sử
+SELECT * FROM lich_su_ma_hoa;
+```
+
+## 🔐 Các chức năng đã hoàn thành trong bài Lab
+1. **Kết nối Cơ sở dữ liệu Cloud:** Kết nối thành công Java Swing tới Neon DB, thực hiện bắt ngoại lệ (Try-Catch) và ghi nhận trạng thái thông suốt.
+2. **Thuật toán mã hóa Caesar:** 
+   - Hỗ trợ mã hóa dịch chuyển ký tự theo khóa số nguyên nhập vào từ giao diện.
+   - Hỗ trợ giải mã ngược chuỗi kết quả về văn bản gốc.
+   - Tự động đồng bộ lịch sử chuỗi gốc, chuỗi mã hóa và nhãn 'Caesar' lên Database sau khi nhấn nút.
+3. **Thuật toán mã hóa Vigenère:**
+   - Mã hóa đa đơn bảng với khóa an toàn dạng chuỗi ký tự tự chọn.
+   - Xử lý chuỗi động chính xác theo vòng lặp độ dài khóa.
+
+## 🚀 Hướng dẫn khởi chạy dự án
+1. Mở thư mục `LAB1_TuLam` bằng các IDE hỗ trợ Maven (Apache NetBeans 17 trở lên hoặc IntelliJ IDEA).
+2. IDE sẽ tự động đọc file `pom.xml` và tải driver kết nối về máy cục bộ.
+3. Click chuột phải vào file `MainForm.java` ➡️ Chọn **Run File** (hoặc nhấn `Shift + F6`) để mở giao diện kiểm thử.
+
