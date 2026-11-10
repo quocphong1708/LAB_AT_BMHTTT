@@ -1,0 +1,9 @@
+CREATE TABLE lich_su_ma_hoa (
+    id SERIAL PRIMARY KEY,
+    ban_goc TEXT,
+    ban_ma TEXT,
+    loai_ma VARCHAR(50),
+    ngay_tao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+SELECT * FROM lich_su_ma_hoa;
