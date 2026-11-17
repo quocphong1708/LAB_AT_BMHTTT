@@ -1,1 +1,19 @@
+Link video youtube: https://youtu.be/QSbUUrMvm-k 
+TRƯƠNG VĂN QUỐC PHONG/1150080153/11ĐH_CNPM2
+LAB 10 MÃ HÓA ĐỐI XỨNG HIỆN ĐẠI
+# LAB10 MÃ HÓA ĐỐI XỨNG HIỆN ĐẠI & KẾT NỐI SQL SERVER
+*Học phần: An toàn và Bảo mật thông tin*
+
+
+## 📁 Cấu trúc thư mục nộp bài
+- `pom.xml`: Cấu hình dự án Maven tích hợp thư viện `mssql-jdbc` và `bcprov-jdk18on` (BouncyCastle).
+- `src/main/java/week_02/`: Mã nguồn Java và các tệp giao diện kéo thả `.form` (`CipherUtil`, `FileTextIO`, `DbConfig`, `HistoryDao`, `UserDao`, `frm_KetNoiSQL`, `frm_LichSu`,...).
+- `SQL_va_Python/`: Chứa các kịch bản `01_Tao_CSDL.sql`, `02_Tao_Tai_Khoan_SQL.sql` và tệp kiểm thử Python `aes_cbc_gui.py`.
+- `HinhAnh_KetQua/`: Hình ảnh minh chứng kết nối thành công SQL Server cổng `14333` và cấu trúc bảng dữ liệu.
+
+## ⚙️ Hướng dẫn chạy chương trình
+1. Chạy các tệp kịch bản trong thư mục `SQL_va_Python` trên SQL Server (cổng `14333`) để khởi tạo CSDL `LAB2_MaHoaHienDai` và tài khoản `lab2_user`.
+2. Mở thư mục dự án `LAB2_MaHoaHienDai` bằng **Apache NetBeans (bản 20 trở lên)** với **JDK 17**.
+3. Nhấn `Shift + F11` (Clean and Build) để tải thư viện Maven.
+4. Chạy `frm_KetNoiSQL.java` (`Shift + F6`), nhập mật khẩu `LabUser@2026` để kiểm tra kết nối cơ sở dữ liệu trước khi thao tác các form mã hóa.
 
