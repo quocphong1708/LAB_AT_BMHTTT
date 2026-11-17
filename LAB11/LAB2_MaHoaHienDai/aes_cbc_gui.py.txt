@@ -1,0 +1,27 @@
+import os
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.primitives import padding
+
+def self_test():
+    key = os.urandom(32)
+    iv = os.urandom(16)
+    plaintext = "Xin chao Lab 2 - Ma hoa hien dai!".encode('utf-8')
+    
+    # Đệm PKCS7 và Mã hóa AES-CBC
+    padder = padding.PKCS7(128).padder()
+    padded_data = padder.update(plaintext) + padder.finalize()
+    cipher = Cipher(algorithms.AES(key), modes.CBC(iv))
+    encryptor = cipher.encryptor()
+    ct = encryptor.update(padded_data) + encryptor.finalize()
+    
+    # Giải mã
+    decryptor = cipher.decryptor()
+    decrypted_padded = decryptor.update(ct) + decryptor.finalize()
+    unpadder = padding.PKCS7(128).unpadder()
+    decrypted = unpadder.update(decrypted_padded) + unpadder.finalize()
+    
+    assert decrypted == plaintext
+    print("SELF-TEST OK")
+
+if __name__ == "__main__":
+    self_test()
