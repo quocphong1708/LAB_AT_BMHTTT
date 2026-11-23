@@ -1,10 +1,12 @@
-# LAB 3: MÃ HÓA KHÓA CÔNG KHAI (RSA, ECC) & KẾT NỐI SQL SERVER
+LINK VIDEO: https://youtu.be/9CYSLuVxlUc
+# LAB 12: MÃ HÓA KHÓA CÔNG KHAI (RSA, ECC) & KẾT NỐI SQL SERVER
 *Học phần: An toàn và Bảo mật thông tin*
 
+
 ## 👤 Thông tin sinh viên
-- **Họ và tên:** [Điền họ tên của bạn]
-- **Mã số sinh viên:** [Điền MSSV của bạn]
-- **Lớp:** [Điền tên lớp của bạn]
+- **Họ và tên:** TRUONG VAN QUOC PHONG
+- **Mã số sinh viên:** 1150080153
+- **Lớp:** 11_DH_CNPM2
 
 ## 📁 Cấu trúc thư mục dự án nộp bài
 - `pom.xml`: Cấu hình dự án Maven sử dụng JDK 17 và thư viện `mssql-jdbc` (version 12.8.1.jre11).
