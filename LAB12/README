@@ -1,1 +1,24 @@
+# LAB 3: MÃ HÓA KHÓA CÔNG KHAI (RSA, ECC) & KẾT NỐI SQL SERVER
+*Học phần: An toàn và Bảo mật thông tin*
+
+## 👤 Thông tin sinh viên
+- **Họ và tên:** [Điền họ tên của bạn]
+- **Mã số sinh viên:** [Điền MSSV của bạn]
+- **Lớp:** [Điền tên lớp của bạn]
+
+## 📁 Cấu trúc thư mục dự án nộp bài
+- `pom.xml`: Cấu hình dự án Maven sử dụng JDK 17 và thư viện `mssql-jdbc` (version 12.8.1.jre11).
+- `src/main/java/week_03/`: Toàn bộ mã nguồn Java và tệp giao diện kéo thả `.form`:
+  - Lớp tiện ích & CSDL: `CryptoSupport.java`, `FileTextIO.java`, `DbConfig.java`, `HistoryDao.java`.
+  - Giao diện quản trị SQL: `frm_KetNoiSQL.java`, `frm_LichSu.java`.
+  - Các bài thực hành đã hoàn thành: `RSACipher.java`, `RSADemo.java` (Bài 3.1), `frm_RSA.java` (Bài 3.2), `ECCCipher.java`, `frm_ECC.java` (Bài 3.3).
+- `03_SQL_SERVER/`: Chứa kịch bản `01_Tao_CSDL.sql` và `02_Tao_TaiKhoan_LAB.sql` khởi tạo CSDL `LAB3_MaHoaKhoaCongKhai` và bảng `dbo.History`.
+- `HinhAnh_KetQua/`: Hình ảnh minh chứng kết nối thành công SQL Server (cổng `14333`) và kết quả chạy kiểm thử các thuật toán RSA, ECC.
+
+## ⚙️ Hướng dẫn cài đặt và chạy chương trình
+1. Chạy lần lượt 2 tệp trong thư mục `03_SQL_SERVER` trên SQL Server (cổng `14333`) để khởi tạo CSDL `LAB3_MaHoaKhoaCongKhai` và tài khoản `lab3_user`.
+2. Mở thư mục `LAB3_MaHoaKhoaCongKhai` bằng **Apache NetBeans (bản 20 trở lên)** với **JDK 17**.
+3. Nhấn `Shift + F11` (**Clean and Build**) để Maven tải tự động driver kết nối.
+4. Nhấp chuột phải vào `frm_KetNoiSQL.java` ➡️ chọn **Run File** (`Shift + F6`), nhập mật khẩu `LabUser@2026` để kết nối cơ sở dữ liệu.
+5. Mở và chạy kiểm thử từng form chức năng (`RSADemo.java`, `frm_RSA.java`, `frm_ECC.java`) bằng phím tắt `Shift + F6`.
 
